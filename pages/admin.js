@@ -17,7 +17,7 @@ export default function Admin() {
       .order("created_at", { ascending: false });
 
     if (error) {
-      setMessage("讀取失敗");
+      setMessage("讀取失敗：" + error.message);
       return;
     }
 
@@ -35,48 +35,38 @@ export default function Admin() {
       .eq("id", id);
 
     if (error) {
-      setMessage("更新失敗");
+      setMessage("更新失敗：" + error.message);
       return;
     }
 
-    setMessage("狀態已更新");
+    setMessage("已更新");
     loadWishes();
   }
 
   return (
-    <div style={{ maxWidth: 900, margin: "0 auto", padding: 40, fontFamily: "system-ui" }}>
-      <h1>發願審核後台</h1>
-      <p>審核學生送出的發願內容。</p>
+    <div style={{ padding: 40 }}>
+      <h1>審核後台</h1>
 
       {message && <p>{message}</p>}
 
-      <div style={{ display: "grid", gap: 12, marginTop: 24 }}>
-        {wishes.map((wish) => (
-          <div key={wish.id} style={{ border: "1px solid #ddd", borderRadius: 12, padding: 16 }}>
-            <strong>{wish.name}</strong>
-            <p>{wish.content}</p>
-            <p>狀態：{wish.status}</p>
+      {wishes.map((w) => (
+        <div key={w.id} style={{ marginBottom: 20 }}>
+          <h3>{w.name}</h3>
+          <p>{w.content}</p>
+          <p>狀態：{w.status}</p>
 
-            <button onClick={() => updateStatus(wish.id, "approved")}>
-              通過
-            </button>
+          <button onClick={() => updateStatus(w.id, "approved")}>
+            通過
+          </button>
 
-            <button
-              onClick={() => updateStatus(wish.id, "rejected")}
-              style={{ marginLeft: 8 }}
-            >
-              退件
-            </button>
-
-            <button
-              onClick={() => updateStatus(wish.id, "pending")}
-              style={{ marginLeft: 8 }}
-            >
-              改回待審
-            </button>
-          </div>
-        ))}
-      </div>
+          <button
+            onClick={() => updateStatus(w.id, "rejected")}
+            style={{ marginLeft: 10 }}
+          >
+            退件
+          </button>
+        </div>
+      ))}
     </div>
   );
 }
